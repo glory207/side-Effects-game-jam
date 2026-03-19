@@ -3,9 +3,19 @@ import { SpObj } from "./object.js";
 import { initCubeBuffer } from "./innit-buffer.js";
 import { Framebuffer } from "./init-texture.js";
 var canvas = document.getElementById("glcanvas");
-var body = document.getElementById("glcanvas");
+var canvas2D = document.createElement("canvas");
+/* Init of 2D canvas -- Shiven 16:51 19/03 */
+canvas2D.style.position = "absolute";
+canvas2D.style.top = "0";
+canvas2D.style.left = "0";
+canvas2D.style.pointerEvents = "none";
+canvas2D.style.backgroundColor = "transparent";
+document.body.appendChild(canvas2D)
+/* ---- */
 
+const WHITE = "rgba(255, 255, 255)";
 const gl = canvas.getContext("webgl2");
+const canvas2DContext = canvas2D.getContext("2d")
 
 var programInfo = initShaderProgram(gl, "defaultShader", "defaultShader");
 
@@ -26,6 +36,22 @@ var objs = [];
 var char;
 var sz = 50.0;
 const keys = {};
+
+/* Functions for 2D drawing, maybe could be put into an object -- Shiven 23:38 19/03 */
+function draw2Dcanvas() {
+    canvas2DContext.clearRect(0, 0, canvas2D.width, canvas2D.height);
+
+    if (keys[" "]) {
+        draw2Drectangle(200, 100, canvas2D.width / 2, canvas2D.height / 2, WHITE)
+    }
+}
+
+function draw2Drectangle(W, H, x, y, colour){
+    canvas2DContext.fillStyle = colour;
+    canvas2DContext.fillRect(x, y, W, H);
+}
+/* --- */
+
 start();
 
 
@@ -86,7 +112,11 @@ window.addEventListener("keyup", (e) => {
 function render(now) {
     update();
     canvas.width = canvas.clientWidth;
+    canvas2D.width = canvas.clientWidth;
+
     canvas.height = canvas.clientHeight;
+    canvas2D.height = canvas.clientHeight;
+
     // makes sure the screen is 16 by 9
     if (canvas.width * 9 > canvas.height * 16) {
         SCR_WIDTH = canvas.height * (16.0 / 9.0);
@@ -205,6 +235,8 @@ function render(now) {
         mat4.create()
     );
     fboObj.drawScene(gl, programInfo);
+    camera.fboObj.drawScene(gl, programInfo);
+    draw2Dcanvas();
     requestAnimationFrame(render);
 
 }
