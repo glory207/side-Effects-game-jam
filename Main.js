@@ -4,7 +4,6 @@ import { SpObj } from "./object.js";
 import { player } from "./innit-player.js";
 import { innit_camera } from "./innit-camera.js";
 var canvas = document.getElementById("glcanvas");
-var body = document.getElementById("glcanvas");
 
 const gl = canvas.getContext("webgl2");
 
@@ -24,7 +23,7 @@ var camera = new innit_camera(gl);
 
 // list of all the objects in the scene
 var objs = [];
-var char;
+var char = new player(gl);
 const keys = {};
 start();
 
@@ -39,8 +38,6 @@ function start() {
         keys[e.key] = false;
     });
 
-
-    char = new player(gl);
     objs.push(char.obj);
     // create the scene objects ill just hardcode them in here for now, eventually ill want to load them from a file or something
     var obj;
@@ -150,6 +147,12 @@ function update() {
         camera.zoom = 250.0;
     }
     char.update(gl, time, deltaTime, keys);
+    var dist = Math.sqrt(camera.pos[0] * camera.pos[0] + char.pos[1] * char.pos[1]);
+    if(dist > 3){
+        // interpolate 
+        camera.pos[0] = camera.pos[0] - (camera.pos[0] + char.pos[0]) * deltaTime * 4.0;
+        camera.pos[1] = camera.pos[1] - (camera.pos[1] + char.pos[1]) * deltaTime * 4.0;
+    }
 }
 
 

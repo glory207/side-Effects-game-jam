@@ -6,10 +6,11 @@ class innit_camera {
     constructor(gl) {
 
         this.rot = [(-45 * Math.PI) / 180, (20 * Math.PI) / 180, 0];
-        this.pos = [0, 0];
+        this.pos = [30, 0];
         // create a framebuffer and an object to render it to
         this.fbo = new Framebuffer(gl);
         this.fboObj = new SpObj(gl, [0, 0, 0], [0, 0, 0], [2, -2, 2], -1, initCubeBuffer(gl, [9]));
+        this.fboObj.texture = this.fbo.texture;
         this.offset_size = [0, 0, 1, 1];
         this.zoom = 1;
     }
@@ -74,7 +75,7 @@ class innit_camera {
         mat4.translate(
             view, // destination matrix
             view, // matrix to translate
-            [-this.pos[0], 0, -this.pos[1]],
+            [this.pos[0], 0, this.pos[1]],
         ); // amount to translate
 
         mat4.multiply(view, projectionMatrix, view)
