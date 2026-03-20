@@ -1,4 +1,4 @@
-import { loadTexture } from "./init-texture.js";
+import { loadTexture } from "../src/init-texture.js";
 
 class SpObj {
     constructor(gl, pos, rot, sca, imj, buffer) {
@@ -9,7 +9,8 @@ class SpObj {
 
         this.buffers = buffer;
         this.texture = loadTexture(gl, imj);
-
+        
+        this.type = "obj"
     }
 
     drawScene(gl, programInfo) {

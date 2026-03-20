@@ -1,7 +1,7 @@
 const texturesNames = {
-    wall:"1000_F_940486312_SdEehnGNoKKWY6jX40QwEAx2pvrnGxRO.jpg",
-    floor:"dc6pbds-a354d62b-93ba-41e0-9b4a-1dd35eb0323b.png",
-    player:"a83c07120129749.60abda77d6af9.png"
+    wall:"../img/1000_F_940486312_SdEehnGNoKKWY6jX40QwEAx2pvrnGxRO.jpg",
+    floor:"../img/dc6pbds-a354d62b-93ba-41e0-9b4a-1dd35eb0323b.png",
+    player:"../img/a83c07120129749.60abda77d6af9.png"
 };
 
 //
@@ -102,8 +102,8 @@ class Framebuffer{
         gl.RGBA, // format
         gl.UNSIGNED_BYTE,           // type
         null);              // data
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   

@@ -1,6 +1,6 @@
-import { initCubeBuffer } from "./innit-buffer.js";
-import { Framebuffer } from "./init-texture.js";
-import { SpObj } from "./object.js";
+import { initCubeBuffer } from "../src/innit-buffer.js";
+import { Framebuffer } from "../src/init-texture.js";
+import { SpObj } from "../src/object.js";
 
 class innit_camera {
     constructor(gl) {
@@ -17,17 +17,18 @@ class innit_camera {
     size(gl, SCR_WIDTH, SCR_HEIGHT) {
 
         gl.bindTexture(gl.TEXTURE_2D, this.fbo.texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, SCR_WIDTH * 2, SCR_HEIGHT * 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, SCR_WIDTH, SCR_HEIGHT, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo.depthFramebuffer);
 
         gl.bindRenderbuffer(gl.RENDERBUFFER, this.fbo.RBOP);
-        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, SCR_WIDTH * 2, SCR_HEIGHT * 2);
-        gl.viewport(0, 0, SCR_WIDTH * 2, SCR_HEIGHT * 2);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT);
+        gl.viewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 
     }
     clear(gl) {
 
-        gl.clearColor(0.2, 0.5, 0.8, 1.0); // Clear to black, fully opaque
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo.depthFramebuffer);
+        gl.clearColor(0,0,1, 1.0); // Clear to black, fully opaque
         gl.clearDepth(1.0); // Clear everything
         gl.enable(gl.DEPTH_TEST); // Enable depth testing
         gl.enable(gl.BLEND); // Enable depth testing

@@ -1,5 +1,5 @@
-import { SpObj } from "./object.js";
-import { initCubeBuffer } from "./innit-buffer.js";
+import { SpObj } from "../src/object.js";
+import { initCubeBuffer } from "../src/innit-buffer.js";
 
 class player {
     constructor(gl) {
@@ -8,7 +8,7 @@ class player {
         this.acc = [10, 0];
         this.rot = [0, 3, 0];
         this.sca = [2, 7, 2];
-        this.obj = new SpObj(gl, [this.pos[0], 7, this.pos[1]], this.rot, [2, 7, 2], "player", initCubeBuffer(gl, [9]));
+        this.obj = new SpObj(gl, [this.pos[0], 7.1, this.pos[1]], this.rot, [2, 7, 2], "player", initCubeBuffer(gl, [9]));
 
         this.obj.textOff = [0, 0, 1 / 6, 1 / 4];
     }
@@ -61,7 +61,7 @@ class player {
         if (this.pos[0]>195) this.pos[0] = 195;
         if (this.pos[1]>95) this.pos[1] = 95;
         if (this.pos[1]<-95) this.pos[1] = -95;
-        this.obj.pos = [this.pos[0], 7, this.pos[1]];
+        this.obj.pos = [this.pos[0], 7.5, this.pos[1]];
 
     }
 }

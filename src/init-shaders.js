@@ -25,16 +25,32 @@ var fsSources = {
 precision mediump float;
 out vec4 fragColor;
 uniform sampler2D uSampler1;
+uniform vec2 test;
 
 in vec3 pos;
 
 void main() {
     vec4 cc = texture(uSampler1, pos.xy );
     if(cc.w < 0.5) discard;
+    if(distance(pos.xy,test)< 0.001)fragColor = vec4(1.0,1.0,1.0,1.0);
+    else fragColor = vec4(texture(uSampler1, pos.xy ).xyz,1.0);
 
-    fragColor = vec4(texture(uSampler1, pos.xy ).xyz,1.0);
+}`,
+clickShader:`#version 300 es
+precision mediump float;
+out vec4 fragColor;
+uniform sampler2D uSampler1;
 
-}`
+uniform int id;
+in vec3 pos;
+
+void main() {
+    vec4 cc = texture(uSampler1, pos.xy );
+    if(cc.w < 0.5) discard;
+
+    fragColor = vec4((float(id)+0.5)/255.0,0,0,1);
+
+}`,
 };
 function initShaderProgram(gl, vertexReference, fragmentReference) {
     const vsSource = vsSources[vertexReference];
@@ -63,6 +79,8 @@ function initShaderProgram(gl, vertexReference, fragmentReference) {
             texturePosition: gl.getAttribLocation(shaderProgram, "aTexturePosition")
         },
         uniformLocations: {
+            id: gl.getUniformLocation(shaderProgram, "id"),
+            test: gl.getUniformLocation(shaderProgram, "test"),
             uSampler1: gl.getUniformLocation(shaderProgram, "uSampler1"),
             projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
             modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
