@@ -1,6 +1,10 @@
 import { SpObj } from "../src/object.js";
 import { initCubeBuffer } from "../src/innit-buffer.js";
 
+function shouldRemove(val){
+    return !val.remove;
+}
+
 class innit_npcManager {
     constructor() {
         this.npcs = [];
@@ -9,10 +13,10 @@ class innit_npcManager {
         this.type = "npc"
     }
     add(gl) {
-        var npc =new innit_npc(gl);
+        var npc = new innit_npc(gl);
         npc.id = this.curid;
         this.curid += 1;
-        
+
         this.npcs.push(npc);
     }
     
@@ -21,14 +25,36 @@ class innit_npcManager {
             npc.obj.drawScene(gl, programInfo);
         });
     }
+    clicked(npc) {
+        if (this.npcs[npc].wander && !this.npcs[npc].leave) {
+            console.log(npc);
+            this.npcs[npc].leave = true;
+            this.npcs[npc].target = [0, 10];
+        }else if(this.npcs[npc].id == this.lineid){
+            this.lineid += 1;
+        }
+    }
     update(gl, time, deltaTime, keys) {
 
         this.npcs.forEach(npc => {
-            var spot = npc.id-this.lineid;
-            if(Math.floor(spot / 12)%2==0) npc.target = [-1-(spot % 12)*3.5,-15+Math.floor(spot / 12)*3.5];
-            else npc.target = [-42+(spot % 12)*3.5,-15+Math.floor(spot / 12)*3.5];
+            if (npc.leave && npc.pos[0] > -6) {
+                npc.target = [-50, 10];
+
+            }
+            else if (npc.leave && npc.pos[0] < -44) {
+                npc.remove = true;
+            } else {
+                var spot = npc.id - this.lineid;
+                if (spot >= 0) {
+                    if (Math.floor(spot / 12) % 2 == 0) npc.target = [-5 - (spot % 12) * 3.5, -15 + Math.floor(spot / 12) * 3.5];
+                    else npc.target = [-42 + (spot % 12) * 3.5, -15 + Math.floor(spot / 12) * 3.5];
+                } else {
+                    npc.wander = true;
+                }
+            }
             npc.update(gl, time, deltaTime, keys);
         });
+        this.npcs = this.npcs.filter(shouldRemove);
         for (var i = 0; i < this.npcs.length; i++) {
             for (var j = 0; j < this.npcs.length; j++) {
                 if (i != j) {
@@ -36,12 +62,12 @@ class innit_npcManager {
                     var len = Math.sqrt(move[0] * move[0] + move[1] * move[1]);
                     if (len < 3) {
 
-                        move[0] = (move[0]/len) * 3.0/2.0;
-                        move[1] = (move[1]/len) * 3.0/2.0;
-                        this.npcs[i].vel[0] +=move[0] * deltaTime * 120;
-                        this.npcs[i].vel[1] +=move[1] * deltaTime * 120;
-                        this.npcs[j].vel[0] -=move[0] * deltaTime * 120;
-                        this.npcs[j].vel[1] -=move[1] * deltaTime * 120;
+                        move[0] = (move[0] / len) * 3.0 / 2.0;
+                        move[1] = (move[1] / len) * 3.0 / 2.0;
+                        this.npcs[i].vel[0] += move[0] * deltaTime * 120;
+                        this.npcs[i].vel[1] += move[1] * deltaTime * 120;
+                        this.npcs[j].vel[0] -= move[0] * deltaTime * 120;
+                        this.npcs[j].vel[1] -= move[1] * deltaTime * 120;
                     }
                 }
             }
@@ -51,6 +77,10 @@ class innit_npcManager {
 
 class innit_npc {
     constructor(gl) {
+        this.leave = false;
+        this.wander = false;
+        this.remove = false;
+        this.timer = -5.0;
         this.id = 0;
         this.pos = [-45, 0];
         this.target = [-20, 0];
@@ -64,11 +94,16 @@ class innit_npc {
     }
 
     update(gl, time, deltaTime, keys) {
+        this.timer -= deltaTime;
+        if (!this.leave && this.wander && this.timer < 0) {
+            this.target = [Math.random() * -35 - 5, Math.random() * 40 - 20]
+            this.timer = Math.random() * 5 + 1;
+        }
         var move = [this.target[0] - this.pos[0], this.target[1] - this.pos[1]];
         var len = Math.sqrt(move[0] * move[0] + move[1] * move[1]);
         var rot = (20 * Math.PI) / 180;
         // normalize the movement input and rotate it by the camera angle
-        if (len > 5) {
+        if (len > 1) {
             move[0] /= len;
             move[1] /= len;
 
@@ -106,10 +141,10 @@ class innit_npc {
         this.pos[0] += this.vel[0] * deltaTime;
         this.pos[1] += this.vel[1] * deltaTime;
 
-         if (this.pos[0]>-5) this.pos[0] = -5;
-         if (this.pos[0]<-45) this.pos[0] = -45;
-         if (this.pos[1]>20) this.pos[1] = 20;
-         if (this.pos[1]<-20) this.pos[1] = -20;
+        if (this.pos[0] > -5) this.pos[0] = -5;
+        if (this.pos[0] < -45) this.pos[0] = -45;
+        if (this.pos[1] > 20) this.pos[1] = 20;
+        if (this.pos[1] < -20) this.pos[1] = -20;
         this.obj.pos = [this.pos[0], 7.5, this.pos[1]];
     }
 }

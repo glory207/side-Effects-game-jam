@@ -41,14 +41,14 @@ precision mediump float;
 out vec4 fragColor;
 uniform sampler2D uSampler1;
 
-uniform int id;
+uniform vec2 id;
 in vec3 pos;
 
 void main() {
     vec4 cc = texture(uSampler1, pos.xy );
     if(cc.w < 0.5) discard;
 
-    fragColor = vec4((float(id)+0.5)/255.0,0,0,1);
+    fragColor = vec4((id+0.5)/255.0,0,1);
 
 }`,
 };

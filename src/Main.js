@@ -30,8 +30,8 @@ var objs = [];
 var char = new player(gl);
 var npcM = new innit_npcManager();
 const keys = {};
+const pixel = new Uint8Array(4); // RGBA
 start();
-
 
 function start() {
     keys["mouseP"] = [0, 0]
@@ -41,6 +41,7 @@ function start() {
         if (e.key == "f") {
             npcM.add(gl);
         }
+        
     });
 
     window.addEventListener("keyup", (e) => {
@@ -48,13 +49,52 @@ function start() {
     });
 
     window.addEventListener("mousemove", (e) => {
-        keys["mouseP"] = [e.clientX - OFF_WIDTH,SCR_HEIGHT- e.clientY + OFF_HEIGHT]
-    })
+        keys["mouseP"] = [e.clientX - OFF_WIDTH, SCR_HEIGHT - e.clientY + OFF_HEIGHT]
+    });
+
+    window.addEventListener("mousedown", (e)=>{
+        if(objs[pixel[0]].type == "npc"){
+            objs[pixel[0]].clicked(pixel[1]);
+        }
+        if(objs[pixel[0]].type == "chest"){
+            objs[pixel[0]].textOff[0] += 1;
+        }
+    });
 
     objs.push(char.obj);
 
     // create the scene objects ill just hardcode them in here for now, eventually ill want to load them from a file or something
     var obj;
+
+    obj = new SpObj(gl, [5, 8, -80], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5,1];
+    obj.type = "chest";
+    objs.push(obj);
+
+    obj = new SpObj(gl, [5, 8, -55], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5,1];
+    obj.type = "chest";
+    objs.push(obj);
+
+    obj = new SpObj(gl, [5, 8, -30], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5,1];
+    obj.type = "chest";
+    objs.push(obj);
+
+    obj = new SpObj(gl, [5, 8, 80], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5,1];
+    obj.type = "chest";
+    objs.push(obj);
+
+    obj = new SpObj(gl, [5, 8, 55], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5,1];
+    obj.type = "chest";
+    objs.push(obj);
+
+    obj = new SpObj(gl, [5, 8, 30], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5,1];
+    obj.type = "chest";
+    objs.push(obj);
     // front room floor
     obj = new SpObj(gl, [-25, 0, 0], [0, 0, 0], [25, 30, 25], "floor", initCubeBuffer(gl, [11]));
     obj.textOff = [0, 0, obj.sca[2] / 10, obj.sca[0] / 10];
@@ -72,6 +112,12 @@ function start() {
 
     // table
     obj = new SpObj(gl, [0, 2.5, 0], [0, 0, 0], [2, 2, 17], "wall", initCubeBuffer(gl, [0, 1, 2, 3, 4, 5]));
+    obj.textOff = [0, 0, obj.sca[2] / 10, obj.sca[2] / 10];
+    obj.type = "table";
+    objs.push(obj);
+
+    // table2
+    obj = new SpObj(gl, [100, 2.5, 0], [0, 0, 0], [40, 2, 17], "wall", initCubeBuffer(gl, [0, 1, 2, 3, 4, 5]));
     obj.textOff = [0, 0, obj.sca[2] / 10, obj.sca[2] / 10];
     objs.push(obj);
 
@@ -113,7 +159,7 @@ function render(now) {
         OFF_HEIGHT = (canvas.height - SCR_HEIGHT) / 2;
         SCR_HEIGHT = canvas.width * (9.0 / 16.0);
     }
-    camera.size(gl, SCR_WIDTH*4, SCR_HEIGHT*4);
+    camera.size(gl, SCR_WIDTH * 4, SCR_HEIGHT * 4);
     Clickcamera.size(gl, SCR_WIDTH, SCR_HEIGHT);
     frameCount++;
     now *= 0.001; // convert to seconds
@@ -127,7 +173,7 @@ function render(now) {
     }
 
 
-    
+
     gl.viewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     Clickcamera.clear(gl);
 
@@ -140,28 +186,30 @@ function render(now) {
     var count = 0
     objs.forEach(obj => {
         if (obj.type == "npc") {
+            var count2 = 0;
             obj.npcs.forEach(npc => {
-                gl.uniform1i(programClick.uniformLocations.id, count);
+                gl.uniform2f(programClick.uniformLocations.id, count, count2);
                 npc.obj.drawScene(gl, programClick);
-                count += 1;
+                count2 += 1;
             });
+            count += 1;
         } else {
 
-            gl.uniform1i(programClick.uniformLocations.id, count);
+            gl.uniform2f(programClick.uniformLocations.id, count, 0);
             obj.drawScene(gl, programClick);
             count += 1;
         }
     });
 
-    gl.viewport(0, 0, SCR_WIDTH*4, SCR_HEIGHT*4);
+    gl.viewport(0, 0, SCR_WIDTH * 4, SCR_HEIGHT * 4);
     camera.clear(gl);
 
     gl.useProgram(programDefault.program);
 
-    gl.uniform2f(programDefault.uniformLocations.test, (keys["mouseP"][0] / SCR_WIDTH-0.5)*0.5+0.5,
-         (keys["mouseP"][1] / SCR_HEIGHT-0.5)*0.5+0.5
+    gl.uniform2f(programDefault.uniformLocations.test, (keys["mouseP"][0] / SCR_WIDTH - 0.5) * 0.5 + 0.5,
+        (keys["mouseP"][1] / SCR_HEIGHT - 0.5) * 0.5 + 0.5
     );
-    
+
     gl.uniformMatrix4fv(
         programDefault.uniformLocations.projectionMatrix,
         false,
@@ -209,17 +257,13 @@ function update() {
     Clickcamera.zoom = camera.zoom;
     Clickcamera.rot = camera.rot;
 
-    npcM.npcs.forEach(npc => {
-
-        npc.target = char.pos;
-    });
     npcM.update(gl, time, deltaTime, keys);
-    const pixel = new Uint8Array(4); // RGBA
+    
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, Clickcamera.fbo.depthFramebuffer);
     gl.readPixels(
-        ((keys["mouseP"][0] / SCR_WIDTH-0.5)*0.5+0.5)*SCR_WIDTH,
-        ((keys["mouseP"][1] / SCR_HEIGHT-0.5)*0.5+0.5)*SCR_HEIGHT,
+        ((keys["mouseP"][0] / SCR_WIDTH - 0.5) * 0.5 + 0.5) * SCR_WIDTH,
+        ((keys["mouseP"][1] / SCR_HEIGHT - 0.5) * 0.5 + 0.5) * SCR_HEIGHT,
         1,
         1,
         gl.RGBA,

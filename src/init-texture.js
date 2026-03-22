@@ -1,7 +1,8 @@
 const texturesNames = {
     wall:"../img/1000_F_940486312_SdEehnGNoKKWY6jX40QwEAx2pvrnGxRO.jpg",
     floor:"../img/dc6pbds-a354d62b-93ba-41e0-9b4a-1dd35eb0323b.png",
-    player:"../img/a83c07120129749.60abda77d6af9.png"
+    player:"../img/a83c07120129749.60abda77d6af9.png",
+    chest:"../img/chest-Sheet.png",
 };
 
 //
