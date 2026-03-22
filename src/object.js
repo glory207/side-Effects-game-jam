@@ -6,10 +6,10 @@ class SpObj {
         this.pos = pos;
         this.sca = sca;
         this.textOff = [0, 0, 1, 1];
-
         this.buffers = buffer;
         this.texture = loadTexture(gl, imj);
-        
+        this.hover = false;
+        this.click = false;
         this.type = "obj"
     }
 

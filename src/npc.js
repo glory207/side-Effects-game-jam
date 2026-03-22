@@ -4,7 +4,7 @@ import { initCubeBuffer } from "../src/innit-buffer.js";
 function shouldRemove(val){
     return !val.remove;
 }
-
+// this class will handle adding and deleting npcs giving them orders making them move etc
 class innit_npcManager {
     constructor() {
         this.npcs = [];

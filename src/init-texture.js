@@ -3,6 +3,10 @@ const texturesNames = {
     floor:"../img/dc6pbds-a354d62b-93ba-41e0-9b4a-1dd35eb0323b.png",
     player:"../img/a83c07120129749.60abda77d6af9.png",
     chest:"../img/chest-Sheet.png",
+    inventory:"../img/inventory-Under.png",
+    marker:"../img/inventory-marker.png",
+    pestle:"../img/pestle -Sheet.png",
+    goblin:"../img/wackGob-Sheet.png"
 };
 
 //
@@ -103,8 +107,8 @@ class Framebuffer{
         gl.RGBA, // format
         gl.UNSIGNED_BYTE,           // type
         null);              // data
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   

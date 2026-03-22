@@ -4,6 +4,7 @@ import { SpObj } from "../src/object.js";
 import { player } from "../src/innit-player.js";
 import { innit_camera } from "../src/innit-camera.js";
 import { innit_npcManager } from "../src/npc.js";
+import { UImannager } from "./ui.js";
 document.addEventListener("contextmenu", e => e.preventDefault());
 var canvas = document.getElementById("glcanvas");
 
@@ -31,6 +32,7 @@ var char = new player(gl);
 var npcM = new innit_npcManager();
 const keys = {};
 const pixel = new Uint8Array(4); // RGBA
+var ui = new UImannager(gl);
 start();
 
 function start() {
@@ -41,7 +43,12 @@ function start() {
         if (e.key == "f") {
             npcM.add(gl);
         }
-        
+
+        if (keys["e"]) {
+            char.working = !char.working;
+            ui.popup = null;
+        }
+
     });
 
     window.addEventListener("keyup", (e) => {
@@ -52,12 +59,23 @@ function start() {
         keys["mouseP"] = [e.clientX - OFF_WIDTH, SCR_HEIGHT - e.clientY + OFF_HEIGHT]
     });
 
-    window.addEventListener("mousedown", (e)=>{
-        if(objs[pixel[0]].type == "npc"){
-            objs[pixel[0]].clicked(pixel[1]);
-        }
-        if(objs[pixel[0]].type == "chest"){
-            objs[pixel[0]].textOff[0] += 1;
+    window.addEventListener("mousedown", (e) => {
+        if (pixel[0] < objs.length) {
+            if (objs[pixel[0]].type == "npc") {
+                objs[pixel[0]].clicked(pixel[1]);
+            }
+            if (objs[pixel[0]].type == "chest") {
+                char.working = !char.working;
+                objs[pixel[0]].textOff[0] += 1;
+            }
+            if (objs[pixel[0]].type == "pestle") {
+                char.working = true;
+                ui.add(gl);
+            }
+        } else if (pixel[0] > objs.length){
+            
+        }else if(ui.popup != null){
+            ui.popup.uis[pixel[1]].click = true;
         }
     });
 
@@ -66,33 +84,38 @@ function start() {
     // create the scene objects ill just hardcode them in here for now, eventually ill want to load them from a file or something
     var obj;
 
-    obj = new SpObj(gl, [5, 8, -80], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
-    obj.textOff = [0, 0, 0.5,1];
+    obj = new SpObj(gl, [30, 11, -80], [0, (0 * Math.PI) / 180, 0], [5, 10, 5], "pestle", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 1.0 / 8.0, 1];
+    obj.type = "pestle";
+    objs.push(obj);
+
+    obj = new SpObj(gl, [5, 8, -80], [0, (75 * Math.PI) / 180, 0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5, 1];
     obj.type = "chest";
     objs.push(obj);
 
-    obj = new SpObj(gl, [5, 8, -55], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
-    obj.textOff = [0, 0, 0.5,1];
+    obj = new SpObj(gl, [5, 8, -55], [0, (75 * Math.PI) / 180, 0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5, 1];
     obj.type = "chest";
     objs.push(obj);
 
-    obj = new SpObj(gl, [5, 8, -30], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
-    obj.textOff = [0, 0, 0.5,1];
+    obj = new SpObj(gl, [5, 8, -30], [0, (75 * Math.PI) / 180, 0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5, 1];
     obj.type = "chest";
     objs.push(obj);
 
-    obj = new SpObj(gl, [5, 8, 80], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
-    obj.textOff = [0, 0, 0.5,1];
+    obj = new SpObj(gl, [5, 8, 80], [0, (75 * Math.PI) / 180, 0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5, 1];
     obj.type = "chest";
     objs.push(obj);
 
-    obj = new SpObj(gl, [5, 8, 55], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
-    obj.textOff = [0, 0, 0.5,1];
+    obj = new SpObj(gl, [5, 8, 55], [0, (75 * Math.PI) / 180, 0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5, 1];
     obj.type = "chest";
     objs.push(obj);
 
-    obj = new SpObj(gl, [5, 8, 30], [0,(75 * Math.PI) / 180,0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
-    obj.textOff = [0, 0, 0.5,1];
+    obj = new SpObj(gl, [5, 8, 30], [0, (75 * Math.PI) / 180, 0], [7, 7, 7], "chest", initCubeBuffer(gl, [9]));
+    obj.textOff = [0, 0, 0.5, 1];
     obj.type = "chest";
     objs.push(obj);
     // front room floor
@@ -173,6 +196,47 @@ function render(now) {
     }
 
 
+    gl.viewport(0, 0, SCR_WIDTH * 4, SCR_HEIGHT * 4);
+    camera.clear(gl);
+
+    gl.useProgram(programDefault.program);
+
+    gl.uniform2f(programDefault.uniformLocations.test, (keys["mouseP"][0] / SCR_WIDTH - 0.5) * 0.5 + 0.5,
+        (keys["mouseP"][1] / SCR_HEIGHT - 0.5) * 0.5 + 0.5
+    );
+
+    gl.uniformMatrix4fv(
+        programDefault.uniformLocations.projectionMatrix,
+        false,
+        camera.matrix(),
+    );
+    objs.forEach(obj => {
+        obj.drawScene(gl, programDefault);
+    });
+    mat = mat4.create();
+    mat4.scale(
+        mat, // destination matrix
+        mat, // matrix to translate
+        [1 / 16, 1 / 9, 1],
+    ); // amount to translate
+    gl.uniformMatrix4fv(
+        programDefault.uniformLocations.projectionMatrix,
+        false,
+        mat
+    );
+    for (var i = 1; i < ui.uis.length; i++)  {
+
+        ui.uis[i].drawScene(gl, programDefault);
+    }
+    if (ui.popup != null) {
+        ui.popup.uis.forEach(obj => {
+
+            obj.drawScene(gl, programDefault);
+        });
+    }
+    ui.reset();
+    // ---------------------------------
+
 
     gl.viewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     Clickcamera.clear(gl);
@@ -200,29 +264,41 @@ function render(now) {
             count += 1;
         }
     });
+    var mat = mat4.create();
+    mat4.scale(
+        mat, // destination matrix
+        mat, // matrix to translate
+        [1 / 16, 1 / 9, 1],
+    ); // amount to translate
+    gl.uniformMatrix4fv(
+        programClick.uniformLocations.projectionMatrix,
+        false,
+        mat
+    );
+    var count2 = 0;
+    if (ui.popup != null) {
+        ui.popup.uis.forEach(obj => {
 
-    gl.viewport(0, 0, SCR_WIDTH * 4, SCR_HEIGHT * 4);
-    camera.clear(gl);
+            gl.uniform2f(programClick.uniformLocations.id, count, count2);
+            obj.drawScene(gl, programClick);
+            count2 += 1;
+        });
+    }
+    count += 1;
+    for (var i = 1; i < ui.uis.length; i++) {
+        gl.uniform2f(programClick.uniformLocations.id, count, 0);
+        ui.uis[i].drawScene(gl, programClick);
+        count += 1;
+    }
+
 
     gl.useProgram(programDefault.program);
-
-    gl.uniform2f(programDefault.uniformLocations.test, (keys["mouseP"][0] / SCR_WIDTH - 0.5) * 0.5 + 0.5,
-        (keys["mouseP"][1] / SCR_HEIGHT - 0.5) * 0.5 + 0.5
-    );
 
     gl.uniformMatrix4fv(
         programDefault.uniformLocations.projectionMatrix,
         false,
-        camera.matrix(),
+        mat4.create()
     );
-    objs.forEach(obj => {
-        obj.drawScene(gl, programDefault);
-    });
-
-    // ---------------------------------
-
-
-
     time += deltaTime;
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -230,26 +306,26 @@ function render(now) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    gl.uniformMatrix4fv(
-        programDefault.uniformLocations.projectionMatrix,
-        false,
-        mat4.create()
-    );
     camera.fboObj.drawScene(gl, programDefault);
     requestAnimationFrame(render);
 
 }
 function update() {
+
     // zoom camera out
     if (keys["c"]) {
         camera.zoom = 500.0;
     } else {
-        camera.zoom = 250.0;
+        camera.zoom = 150.0;
     }
     char.update(gl, time, deltaTime, keys);
-    var dist = Math.sqrt(Math.pow(camera.pos[0] - char.pos[0], 2) + Math.pow(camera.pos[1] - char.pos[1], 2));
-    if (dist > 3) {
-        // interpolate 
+    if (char.working) {
+
+        // interpolate
+        camera.pos[0] = camera.pos[0] - (camera.pos[0] + char.pos[0] + 10) * deltaTime * 4.0;
+        camera.pos[1] = camera.pos[1] - (camera.pos[1] + char.pos[1]) * deltaTime * 4.0;
+    } else {
+        // interpolate
         camera.pos[0] = camera.pos[0] - (camera.pos[0] + char.pos[0]) * deltaTime * 4.0;
         camera.pos[1] = camera.pos[1] - (camera.pos[1] + char.pos[1]) * deltaTime * 4.0;
     }
@@ -258,7 +334,7 @@ function update() {
     Clickcamera.rot = camera.rot;
 
     npcM.update(gl, time, deltaTime, keys);
-    
+
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, Clickcamera.fbo.depthFramebuffer);
     gl.readPixels(
@@ -270,8 +346,21 @@ function update() {
         gl.UNSIGNED_BYTE,
         pixel
     );
-
+    ui.update(gl, time, deltaTime, keys);
     //console.log(pixel[0], pixel[1], pixel[2]); // [R, G, B, A
+    if (pixel[0] < objs.length) {
+        if (objs[pixel[0]].type == "pestle") {
+            objs[pixel[0]].textOff[0] = Math.floor(time * 10);
+        }
+    } else if (pixel[0] > objs.length){
+        if (ui.uis[pixel[0] - objs.length].type == "inventory") {
+            ui.uis[pixel[0] - objs.length].off[1] = 0.15;
+
+        }
+    } else if(ui.popup != null){
+
+    }
+
 
 }
 

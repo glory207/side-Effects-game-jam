@@ -8,34 +8,36 @@ class player {
         this.acc = [10, 0];
         this.rot = [0, 3, 0];
         this.sca = [2, 7, 2];
-        this.obj = new SpObj(gl, [this.pos[0], 7.1, this.pos[1]], this.rot, [2, 7, 2], "player", initCubeBuffer(gl, [9]));
-
+        this.obj = new SpObj(gl, [this.pos[0], 8, this.pos[1]], this.rot, [2, 7, 2], "player", initCubeBuffer(gl, [9]));
+        this.inventory = [null] * 9;
         this.obj.textOff = [0, 0, 1 / 6, 1 / 4];
+        this.working = false;
     }
 
     update(gl, time, deltaTime, keys) {
         var move = [0, 0]
-        
         // get the movement input direction
-        if (keys["w"]) {
-            move[1] -= 1;
-            this.obj.textOff[1] = 3;
-            this.obj.textOff[0] = Math.floor(time * 10);
-        }
-        if (keys["s"]) {
-            move[1] += 1;
-            this.obj.textOff[1] = 0;
-            this.obj.textOff[0] = Math.floor(time * 10);
-        }
-        if (keys["a"]) {
-            move[0] -= 1;
-            this.obj.textOff[1] = 2;
-            this.obj.textOff[0] = Math.floor(time * 10);
-        }
-        if (keys["d"]) {
-            move[0] += 1;
-            this.obj.textOff[1] = 1;
-            this.obj.textOff[0] = Math.floor(time * 10);
+        if (!this.working) {
+            if (keys["w"]) {
+                move[1] -= 1;
+                this.obj.textOff[1] = 3;
+                this.obj.textOff[0] = Math.floor(time * 10);
+            }
+            if (keys["s"]) {
+                move[1] += 1;
+                this.obj.textOff[1] = 0;
+                this.obj.textOff[0] = Math.floor(time * 10);
+            }
+            if (keys["a"]) {
+                move[0] -= 1;
+                this.obj.textOff[1] = 2;
+                this.obj.textOff[0] = Math.floor(time * 10);
+            }
+            if (keys["d"]) {
+                move[0] += 1;
+                this.obj.textOff[1] = 1;
+                this.obj.textOff[0] = Math.floor(time * 10);
+            }
         }
         var len = Math.sqrt(move[0] * move[0] + move[1] * move[1]);
         var rot = (-20 * Math.PI) / 180;
@@ -44,7 +46,7 @@ class player {
             move[0] /= len;
             move[1] /= len;
             len = Math.sqrt(move[0] * move[0] + move[1] * move[1]);
-            
+
 
         }
         // move the player by applying acceleration, velocity, and friction
@@ -57,12 +59,14 @@ class player {
         this.pos[0] += this.vel[0] * deltaTime;
         this.pos[1] += this.vel[1] * deltaTime;
 
-        if (this.pos[0]<5) this.pos[0] = 5;
-        if (this.pos[0]>195) this.pos[0] = 195;
-        if (this.pos[1]>95) this.pos[1] = 95;
-        if (this.pos[1]<-95) this.pos[1] = -95;
+        if (this.pos[0] < 5) this.pos[0] = 5;
+        if (this.pos[0] > 195) this.pos[0] = 195;
+        if (this.pos[1] > 95) this.pos[1] = 95;
+        if (this.pos[1] < -95) this.pos[1] = -95;
         this.obj.pos = [this.pos[0], 7.5, this.pos[1]];
 
     }
+
+
 }
 export { player };
