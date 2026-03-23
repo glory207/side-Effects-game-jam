@@ -1,42 +1,47 @@
 import { SpObj } from "../src/object.js";
 import { initCubeBuffer } from "../src/innit-buffer.js";
 
-function shouldRemove(val){
+function shouldRemove(val) {
     return !val.remove;
 }
 // this class will handle adding and deleting npcs giving them orders making them move etc
 class innit_npcManager {
     constructor() {
-        this.npcs = [];
+        this.children = [];
         this.curid = 0;
         this.lineid = 0;
-        this.type = "npc"
+
+        this.hover = false;
+        this.click = false;
+        this.type = { name: "npc", children: true }
     }
     add(gl) {
         var npc = new innit_npc(gl);
         npc.id = this.curid;
         this.curid += 1;
 
-        this.npcs.push(npc);
+        this.children.push(npc);
     }
-    
+
     drawScene(gl, programInfo) {
-        this.npcs.forEach(npc => {
+        this.children.forEach(npc => {
             npc.obj.drawScene(gl, programInfo);
         });
     }
-    clicked(npc) {
-        if (this.npcs[npc].wander && !this.npcs[npc].leave) {
-            console.log(npc);
-            this.npcs[npc].leave = true;
-            this.npcs[npc].target = [0, 10];
-        }else if(this.npcs[npc].id == this.lineid){
-            this.lineid += 1;
-        }
-    }
-    update(gl, time, deltaTime, keys) {
 
-        this.npcs.forEach(npc => {
+
+    update(gl, time, deltaTime, keys) {
+        
+        this.children.forEach(npc => {
+            if (npc.click) {
+                
+                if (npc.wander && !npc.leave) {
+                    npc.leave = true;
+                    npc.target = [0, 10];
+                } else if (npc.id == this.lineid) {
+                    this.lineid += 1;
+                }
+            }
             if (npc.leave && npc.pos[0] > -6) {
                 npc.target = [-50, 10];
 
@@ -46,28 +51,28 @@ class innit_npcManager {
             } else {
                 var spot = npc.id - this.lineid;
                 if (spot >= 0) {
-                    if (Math.floor(spot / 12) % 2 == 0) npc.target = [-5 - (spot % 12) * 3.5, -15 + Math.floor(spot / 12) * 3.5];
-                    else npc.target = [-42 + (spot % 12) * 3.5, -15 + Math.floor(spot / 12) * 3.5];
+                    npc.target = [-5 - (spot % 12) * 3.5, -15];
                 } else {
                     npc.wander = true;
                 }
             }
             npc.update(gl, time, deltaTime, keys);
         });
-        this.npcs = this.npcs.filter(shouldRemove);
-        for (var i = 0; i < this.npcs.length; i++) {
-            for (var j = 0; j < this.npcs.length; j++) {
+        this.children = this.children.filter(shouldRemove);
+
+        for (var i = 0; i < this.children.length; i++) {
+            for (var j = 0; j < this.children.length; j++) {
                 if (i != j) {
-                    var move = [this.npcs[i].pos[0] - this.npcs[j].pos[0], this.npcs[i].pos[1] - this.npcs[j].pos[1]];
+                    var move = [this.children[i].pos[0] - this.children[j].pos[0], this.children[i].pos[1] - this.children[j].pos[1]];
                     var len = Math.sqrt(move[0] * move[0] + move[1] * move[1]);
                     if (len < 3) {
 
                         move[0] = (move[0] / len) * 3.0 / 2.0;
                         move[1] = (move[1] / len) * 3.0 / 2.0;
-                        this.npcs[i].vel[0] += move[0] * deltaTime * 120;
-                        this.npcs[i].vel[1] += move[1] * deltaTime * 120;
-                        this.npcs[j].vel[0] -= move[0] * deltaTime * 120;
-                        this.npcs[j].vel[1] -= move[1] * deltaTime * 120;
+                        this.children[i].vel[0] += move[0] * deltaTime * 120;
+                        this.children[i].vel[1] += move[1] * deltaTime * 120;
+                        this.children[j].vel[0] -= move[0] * deltaTime * 120;
+                        this.children[j].vel[1] -= move[1] * deltaTime * 120;
                     }
                 }
             }
@@ -82,7 +87,7 @@ class innit_npc {
         this.remove = false;
         this.timer = -5.0;
         this.id = 0;
-        this.pos = [-45, 0];
+        this.pos = [-35, 0];
         this.target = [-20, 0];
         this.vel = [10, 0];
         this.acc = [10, 0];
@@ -91,12 +96,18 @@ class innit_npc {
         this.obj = new SpObj(gl, [this.pos[0], 7.1, this.pos[1]], this.rot, [2, 7, 2], "player", initCubeBuffer(gl, [9]));
 
         this.obj.textOff = [0, 0, 1 / 6, 1 / 4];
-    }
 
+        this.hover = false;
+        this.click = false;
+        this.type = { name: "NPC", children: false }
+    }
+    drawScene(gl, programInfo) {
+        this.obj.drawScene(gl, programInfo);
+    }
     update(gl, time, deltaTime, keys) {
         this.timer -= deltaTime;
         if (!this.leave && this.wander && this.timer < 0) {
-            this.target = [Math.random() * -35 - 5, Math.random() * 40 - 20]
+            this.target = [Math.random() * -30 - 5, Math.random() * 70 - 35]
             this.timer = Math.random() * 5 + 1;
         }
         var move = [this.target[0] - this.pos[0], this.target[1] - this.pos[1]];
@@ -142,9 +153,9 @@ class innit_npc {
         this.pos[1] += this.vel[1] * deltaTime;
 
         if (this.pos[0] > -5) this.pos[0] = -5;
-        if (this.pos[0] < -45) this.pos[0] = -45;
-        if (this.pos[1] > 20) this.pos[1] = 20;
-        if (this.pos[1] < -20) this.pos[1] = -20;
+        //if (this.pos[0] < -40) this.pos[0] = -40;
+        if (this.pos[1] > 35) this.pos[1] = 35;
+        if (this.pos[1] < -35) this.pos[1] = -35;
         this.obj.pos = [this.pos[0], 7.5, this.pos[1]];
     }
 }

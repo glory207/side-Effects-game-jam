@@ -10,7 +10,7 @@ class SpObj {
         this.texture = loadTexture(gl, imj);
         this.hover = false;
         this.click = false;
-        this.type = "obj"
+        this.type = {name:"obj", children:false}
     }
 
     drawScene(gl, programInfo) {

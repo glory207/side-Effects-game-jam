@@ -1,12 +1,18 @@
 const texturesNames = {
-    wall:"../img/1000_F_940486312_SdEehnGNoKKWY6jX40QwEAx2pvrnGxRO.jpg",
-    floor:"../img/dc6pbds-a354d62b-93ba-41e0-9b4a-1dd35eb0323b.png",
-    player:"../img/a83c07120129749.60abda77d6af9.png",
+    wall:"../img/wallwood.png",
+    floor:"../img/floor.jpg",
+    player:"../img/player.png",
     chest:"../img/chest-Sheet.png",
     inventory:"../img/inventory-Under.png",
     marker:"../img/inventory-marker.png",
     pestle:"../img/pestle -Sheet.png",
-    goblin:"../img/wackGob-Sheet.png"
+    goblin:"../img/wackGob-Sheet.png",
+    window:"../img/window.png",
+    cash:"../img/cashreg.png",
+    furnace:"../img/furnace.png",
+    book:"../img/book.png",
+    pot:"../img/pot.png",
+    choppingboard:"../img/choppingboard.png",
 };
 
 //

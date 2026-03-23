@@ -3,7 +3,7 @@ import { initCubeBuffer } from "../src/innit-buffer.js";
 
 class player {
     constructor(gl) {
-        this.pos = [30, 0];
+        this.pos = [15, 0];
         this.vel = [10, 0];
         this.acc = [10, 0];
         this.rot = [0, 3, 0];
@@ -40,12 +40,11 @@ class player {
             }
         }
         var len = Math.sqrt(move[0] * move[0] + move[1] * move[1]);
-        var rot = (-20 * Math.PI) / 180;
+        var rot = (-15 * Math.PI) / 180;
         // normalize the movement input and rotate it by the camera angle
         if (len > 0) {
-            move[0] /= len;
+            move[0] /= len*2;
             move[1] /= len;
-            len = Math.sqrt(move[0] * move[0] + move[1] * move[1]);
 
 
         }
@@ -60,9 +59,13 @@ class player {
         this.pos[1] += this.vel[1] * deltaTime;
 
         if (this.pos[0] < 5) this.pos[0] = 5;
-        if (this.pos[0] > 195) this.pos[0] = 195;
-        if (this.pos[1] > 95) this.pos[1] = 95;
-        if (this.pos[1] < -95) this.pos[1] = -95;
+        if (this.pos[0] > 55) this.pos[0] = 55;
+        if (this.pos[1] > 45) this.pos[1] = 45;
+        if (this.pos[1] < -35) this.pos[1] = -35;
+
+        if(this.pos[1] < 10 && this.pos[1] > -10 && this.pos[0] < 30+13 && this.pos[0] > 30-13 ){
+            this.obj.pos = [this.pos[0], 7.5+5, this.pos[1]];
+        }else
         this.obj.pos = [this.pos[0], 7.5, this.pos[1]];
 
     }
