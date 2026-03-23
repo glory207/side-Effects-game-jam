@@ -248,6 +248,9 @@ function update() {
         gl.UNSIGNED_BYTE,
         pixel
     );
+    objs.children.forEach(obj => {
+        obj.update(gl, time, deltaTime, keys);
+    });
     ui.update(gl, time, deltaTime, keys);
     //console.log(pixel[0], pixel[1], pixel[2]); // [R, G, B, A
 

@@ -10,7 +10,7 @@ class SpObj {
         this.texture = loadTexture(gl, imj);
         this.hover = false;
         this.click = false;
-        this.type = {name:"obj", children:false}
+        this.type = { name: "obj", children: false }
     }
 
     drawScene(gl, programInfo) {
@@ -104,7 +104,9 @@ class SpObj {
         );
         gl.enableVertexAttribArray(attribLocations);
     }
+    update(gl, time, deltaTime, keys) {
 
+    }
 
 }
 
