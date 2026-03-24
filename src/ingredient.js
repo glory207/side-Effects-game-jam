@@ -70,14 +70,16 @@ Scale: 1–10
 var ingredients = {
     HealingHerb: {
         name:"HealingHerb",
+        pre:"",
         tier: "Common",
-        primaryEffect: { type: "Healing", value: 3 },
+        primaryEffect: { type: "Healing", value: 1 },
         sideEffects: { type: "Drowsiness", category: "Mental", strength: 2 },
     }
 
 
     , RedMushroom: {
         name:"RedMushroom",
+        pre:"",
         tier: "Common",
         primaryEffect: { type: "Strength", value: 4 },
         sideEffects: { type: "Poison", category: "Physical", strength: 3 },
@@ -86,6 +88,7 @@ var ingredients = {
 
     , BlueBerry: {
         name:"BlueBerry",
+        pre:"",
         tier: "Common",
         primaryEffect: { type: "Energy", value: 3 },
         sideEffects: { type: "Confusion", category: "Mental", strength: 2 },
@@ -93,6 +96,7 @@ var ingredients = {
 
     , CyclopsEye: {
         name:"CyclopsEye",
+        pre:"",
         tier: "Uncommon",
         primaryEffect: { type: "Vision", value: 5 },
         sideEffects: { type: "Rage", category: "Mental", strength: 5 },
@@ -100,6 +104,7 @@ var ingredients = {
 
     , FireBlossom: {
         name:"FireBlossom",
+        pre:"",
         tier: "Uncommon",
         primaryEffect: { type: "Walmth", value: 6 },
         sideEffects: { type: "Burning", category: "Physical", strength: 5 },
@@ -108,6 +113,7 @@ var ingredients = {
 
     , FrostPetal: {
         name:"FrostPetal",
+        pre:"",
         tier: "Uncommon",
         primaryEffect: { type: "Defense", value: 5 },
         sideEffects: { type: "SelfSlow", category: "Physical", strength: 4 },
@@ -116,6 +122,7 @@ var ingredients = {
 
     , WindFeather: {
         name:"WindFeather",
+        pre:"",
         tier: "Uncommon",
         primaryEffect: { type: "Speed", value: 5 },
         sideEffects: { type: "Fragility", category: "Physical", strength: 3 },
@@ -123,6 +130,7 @@ var ingredients = {
 
     , ShadowCore: {
         name:"ShadowCore",
+        pre:"",
         tier: "Rare",
         primaryEffect: { type: "Invisibility", value: 8 },
         sideEffects: { type: "Blindness", category: "Physical", strength: 6 },
@@ -131,6 +139,7 @@ var ingredients = {
 
     , MoonstoneDust: {
         name:"MoonstoneDust",
+        pre:"",
         tier: "Rare",
         primaryEffect: { type: "Luck", value: 7 },
         sideEffects: { type: "PermanentLifespanLoss", category: "Mental", strength: 5 },
@@ -139,6 +148,7 @@ var ingredients = {
 
     , TaintedCross: {
         name:"TaintedCross",
+        pre:"",
         tier: "Rare",
         primaryEffect: { type: "reserection", value: 7 },
         sideEffects: { type: "Madness", category: "Mental", strength: 4 },
@@ -146,6 +156,7 @@ var ingredients = {
 
     , VoidEssence: {
         name:"VoidEssence",
+        pre:"",
         tier: "Forbidden",
         primaryEffect: { type: "PowerBoost", value: 10 },
         sideEffects: { type: "RandomEffect", category: "Chaos", strength: 10 },
@@ -154,6 +165,7 @@ var ingredients = {
 
     , SoulFragment: {
         name:"SoulFragment",
+        pre:"",
         tier: "Forbidden",
         primaryEffect: { type: "LifeSteal", value: 9 },
         sideEffects: { type: "Hallucinations", category: "Physical", strength: 7 },

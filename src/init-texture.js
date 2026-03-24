@@ -35,6 +35,8 @@ const texturesNames = {
     ok:"../img/ok.png",
     potion:"../img/potion.png",
     progressbar:"../img/progressbar.png",
+    adders:"../img/adders.png",
+    effects:"../img/effects.png",
 };
 
 //

@@ -37,11 +37,19 @@ class innit_npcManager {
         if (this.timer < 0) {
 
             this.timer = Math.random() * 20 + 30;
-           if(this.curid - this.lineid<6) this.add(gl);
+            if (this.curid - this.lineid < 6) this.add(gl);
         }
 
         this.children.forEach(npc => {
             if (npc.id == this.lineid && (keys["accept"] || keys["regect"])) {
+                keys["offer"] = [
+                    Math.floor(Math.random() * 3),
+                    Math.floor(Math.random() * 12),
+                    Math.floor(Math.random() * 3),
+                    Math.floor(Math.random() * 12),
+                    3,
+                    Math.floor(Math.random() * 12),
+                ];
                 if (keys["accept"]) {
                     this.lineid += 1;
                 }

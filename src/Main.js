@@ -40,7 +40,12 @@ var pointer = new SpObj(gl, [0, 0, 0], [0, 0, 0], [0.75, 0.75, 1], "marker", ini
 start();
 
 function start() {
-    keys["inventory"] = {3:ingredients.CyclopsEye};
+    keys["inventory"] = {3:Object.assign({}, ingredients.CyclopsEye) ,4: Object.assign({}, ingredients.FireBlossom) };
+    var k = 6;
+    for(let element in ingredients) {
+        keys["inventory"][k] = Object.assign({}, ingredients[element]);
+        k++;
+    }
     keys["mouseP"] = [0, 0]
     keys["lock"] = "";
     // add event listeners for key presses
