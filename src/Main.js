@@ -4,6 +4,10 @@ import { innit_camera } from "../src/innit-camera.js";
 import { innit_npcManager } from "../src/npc.js";
 import { UImannager } from "./ui.js";
 import { innit_scene } from "./scene.js";
+import { ingredients } from "./ingredient.js";
+import { SpObj } from "../src/object.js";
+import { initCubeBuffer } from "../src/innit-buffer.js";
+import { loadTexture } from "./init-texture.js";
 document.addEventListener("contextmenu", e => e.preventDefault());
 var canvas = document.getElementById("glcanvas");
 
@@ -28,14 +32,17 @@ var Clickcamera = new innit_camera(gl);
 // list of all the objects in the scene
 var char = new player(gl);
 var npcM = new innit_npcManager();
-var objs = new innit_scene(gl,char,npcM);
+var objs = new innit_scene(gl, char, npcM);
 const keys = {};
 const pixel = new Uint8Array(4); // RGBA
 var ui = new UImannager(gl);
+var pointer = new SpObj(gl, [0, 0, 0], [0, 0, 0], [0.75, 0.75, 1], "marker", initCubeBuffer(gl, [9]));
 start();
 
 function start() {
+    keys["inventory"] = {3:ingredients.CyclopsEye};
     keys["mouseP"] = [0, 0]
+    keys["lock"] = "";
     // add event listeners for key presses
     window.addEventListener("keydown", (e) => {
         keys[e.key] = true;
@@ -44,8 +51,8 @@ function start() {
         }
 
         if (keys["e"]) {
-            char.working = !char.working;
-            ui.popup = null;
+            keys["lock"] = "";
+
         }
 
     });
@@ -65,7 +72,6 @@ function start() {
 
 }
 function render(now) {
-    update();
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
     // makes sure the screen is 16 by 9
@@ -114,6 +120,9 @@ function render(now) {
     function draw(lst) {
         lst.forEach(i => {
             if (i != null) {
+                if (i.type == "wacamolGame") {
+                    console.log("asd");
+                }
                 if (i.type.children) {
                     draw(i.children);
                 } else {
@@ -137,7 +146,10 @@ function render(now) {
     );
 
     draw(ui.children);
-    ui.reset();
+
+    if (keys["inventory"][0] != null) {
+        pointer.drawScene(gl, programDefault);
+    }
     // ---------------------------------
 
 
@@ -166,8 +178,9 @@ function render(now) {
                     if (pixel[0] == count) {
                         i.hover = true;
                         if (keys["mouseD"]) {
+                            keys["mouseD"] = false;
                             i.click = true;
-                            console.log(pixel[0], pixel[1], pixel[2]);
+                            //  console.log(pixel[0], pixel[1], pixel[2]);
                         }
                     }
                     count += 1;
@@ -191,7 +204,6 @@ function render(now) {
     );
 
     drawClick(ui.children)
-    keys["mouseD"] = false;
 
     gl.useProgram(programDefault.program);
 
@@ -208,11 +220,20 @@ function render(now) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     camera.fboObj.drawScene(gl, programDefault);
+
+    update();
     requestAnimationFrame(render);
 
 }
 function update() {
+    if (keys["inventory"]["0"] != null) {
+        pointer.texture = loadTexture(gl, keys["inventory"]["0"].name);
+    }
+    pointer.pos[0] = ((keys["mouseP"][0] / SCR_WIDTH - 0.5) * 16);
+    pointer.pos[1] = ((keys["mouseP"][1] / SCR_HEIGHT - 0.5) * 9);
 
+
+    keys["player"] = char.pos;
     // zoom camera out
     if (keys["c"]) {
         camera.zoom = 500.0;
@@ -220,7 +241,7 @@ function update() {
         camera.zoom = 150.0;
     }
     char.update(gl, time, deltaTime, keys);
-    if (char.working) {
+    if (keys["lock"] != "") {
 
         // interpolate
         camera.pos[0] = camera.pos[0] - (camera.pos[0] + char.pos[0] + 10) * deltaTime * 4.0;
@@ -234,8 +255,6 @@ function update() {
     Clickcamera.pos = camera.pos;
     Clickcamera.zoom = camera.zoom;
     Clickcamera.rot = camera.rot;
-
-    npcM.update(gl, time, deltaTime, keys);
 
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, Clickcamera.fbo.depthFramebuffer);

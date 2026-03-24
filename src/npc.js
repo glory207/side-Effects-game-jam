@@ -14,6 +14,8 @@ class innit_npcManager {
         this.hover = false;
         this.click = false;
         this.type = { name: "npc", children: true }
+
+        this.timer = Math.random() * 10;
     }
     add(gl) {
         var npc = new innit_npc(gl);
@@ -31,10 +33,16 @@ class innit_npcManager {
 
 
     update(gl, time, deltaTime, keys) {
-        
+        this.timer -= deltaTime;
+        if (this.timer < 0) {
+
+            this.timer = Math.random() * 20 + 10;
+            this.add(gl);
+        }
+
         this.children.forEach(npc => {
             if (npc.click) {
-                
+
                 if (npc.wander && !npc.leave) {
                     npc.leave = true;
                     npc.target = [0, 10];
@@ -107,7 +115,7 @@ class innit_npc {
     update(gl, time, deltaTime, keys) {
         this.timer -= deltaTime;
         if (!this.leave && this.wander && this.timer < 0) {
-            this.target = [Math.random() * -30 - 5, Math.random() * 70 - 35]
+            this.target = [Math.random() * -30 - 5, Math.random() * 60 - 30]
             this.timer = Math.random() * 5 + 1;
         }
         var move = [this.target[0] - this.pos[0], this.target[1] - this.pos[1]];

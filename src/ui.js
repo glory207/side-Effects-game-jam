@@ -1,48 +1,79 @@
 import { SpObj } from "../src/object.js";
 import { initCubeBuffer } from "../src/innit-buffer.js";
+import { loadTexture } from "./init-texture.js";
 
 class UImannager {
     constructor(gl) {
         this.hover = false;
         this.click = false;
-        this.type = {name:"UI", children:true}
+        this.type = { name: "UI", children: true }
         this.children = [];
-        this.popup = null;
-        this.children.push(this.popup);
+        this.children.push(null);
         var ui;
         ui = new inventoryUI(gl, [(0 - 2) * 0.7 * 2, -3.783, 0]);
         ui.obj.textOff[0] = 1;
+        ui.id = 1;
         this.children.push(ui);
         for (let i = 1; i < 5; i++) {
             ui = new inventoryUI(gl, [(i - 2) * 0.7 * 2, -3.783, 0]);
+            ui.id = i+1;
             this.children.push(ui);
-
         }
     }
-    reset() {
-        this.children.forEach(ui => {
-            if (ui != null && ui.type.name == "inventory") {
-                ui.reset();
-            }
-        });
-    }
+
     update(gl, time, deltaTime, keys) {
-        if (this.popup != null) {
-            this.popup.update(gl, time, deltaTime, keys);
+
+        switch (keys["lock"]) {
+            case "":
+                this.children[0] = null;
+                break;
+            case "pestle":
+                if (this.children[0] == null) this.children[0] = new wacamolGame(gl);
+                break
+            case "choppingboard":
+                if (this.children[0] == null) this.children[0] = new wacamolGame(gl);
+                break
+            case "chest":
+                if (this.children[0] == null) this.children[0] = new ChestVeiw(gl);
+                break
+            case "book":
+                if (this.children[0] == null) this.children[0] = new wacamolGame(gl);
+                break
+            case "furnace":
+                if (this.children[0] == null) this.children[0] = new wacamolGame(gl);
+                break
+            case "pot":
+                if (this.children[0] == null) this.children[0] = new wacamolGame(gl);
+                break
+            case "cash":
+                if (this.children[0] == null) this.children[0] = new wacamolGame(gl);
+                break
+
+            default:
+                break;
+        }
+
+        if (this.children[0] != null) {
+            this.children[0].update(gl, time, deltaTime, keys);
         }
         for (let i = 1; i < 6; i++) {
-            if(this.children[i].hover){
-                this.children[i].off[1] = 0.15;
-                if(this.children[i].click){
-                    this.children[i].off[1] = 0.05;
-                }
+            if (this.children[i].click) {
+               var temp = keys["inventory"][this.children[i].id];
+               keys["inventory"][this.children[i].id] = keys["inventory"][0];
+               keys["inventory"][0] = temp;
             }
-
+            if(keys["inventory"][this.children[i].id] != null){
+                this.children[i].obj2.texture = loadTexture(gl,keys["inventory"][this.children[i].id].name);
+                this.children[i].obj2.textOff[2] = 1;
+            }else{
+                this.children[i].obj2.texture = loadTexture(gl,"marker");
+                this.children[i].obj2.textOff[2] = 0.5;
+            }
         }
     }
     add(gl) {
-        if (this.popup == null) {
-            this.popup = new wacamolGame(gl);
+        if (this.children[0] == null) {
+            this.children[0] = new wacamolGame(gl);
         }
     }
 }
@@ -66,10 +97,10 @@ class wacamolGame {
         this.gob3 = new SpObj(gl, [4, -2, 0], [0, 0, 0], [1, 1, 1], "goblin", initCubeBuffer(gl, [9]));
         this.gob3.textOff[2] = 1 / 3;
         this.children.push(this.gob3);
-        
+
         this.hover = false;
         this.click = false;
-        this.type = {name:"popup", children:true}
+        this.type = { name: "wacamolGame", children: true }
     }
     update(gl, time, deltaTime, keys) {
         this.timerb1 -= deltaTime;
@@ -128,26 +159,56 @@ class wacamolGame {
         }
     }
 }
-class inventoryUI {
-    constructor(gl, pos) {
-        this.item = null;
+class ChestVeiw {
+    constructor(gl) {
+        this.children = [];
+        var ui = new SpObj(gl, [4, 0.5, 0], [0, 0, 0], [3.5, 3.5, 1], "inventory", initCubeBuffer(gl, [9]));
+        this.children.push(ui);
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < 4; j++) {
+                ui = new inventoryUI(gl, [1.75 + i * 1.5, -1.75 + j * 1.5, 0]);
+                ui.id = i + j*4 + 6;
+                this.children.push(ui);
+            }
+        }
         this.hover = false;
         this.click = false;
-        this.type = {name:"inventory", children:false}
+        this.type = { name: "ChestVeiw", children: true }
+    }
+    update(gl, time, deltaTime, keys) {
+        for(let i = 1; i < 17; i++){
+            if (this.children[i].click) {
+               var temp = keys["inventory"][this.children[i].id];
+               keys["inventory"][this.children[i].id] = keys["inventory"][0];
+               keys["inventory"][0] = temp;
+            }
+            if(keys["inventory"][this.children[i].id] != null){
+                this.children[i].obj2.texture = loadTexture(gl,keys["inventory"][this.children[i].id].name);
+                this.children[i].obj2.textOff[2] = 1;
+            }else{
+                this.children[i].obj2.texture = loadTexture(gl,"marker");
+                this.children[i].obj2.textOff[2] = 0.5;
+            }
+        }
+    }
+}
+class inventoryUI {
+    constructor(gl, pos, id) {
+        this.id = id;
+        this.hover = false;
+        this.click = false;
+        this.type = { name: "inventory", children: false }
         this.obj = new SpObj(gl, pos, [0, 0, 0], [0.75, 0.75, 1], "marker", initCubeBuffer(gl, [9]));
+        this.obj2 = new SpObj(gl, pos, [0, 0, 0], [0.75, 0.75, 1], "marker", initCubeBuffer(gl, [9]));
         this.obj.textOff[2] = 0.5;
-        this.off = [0, 0];
     }
     drawScene(gl, program) {
-        this.obj.pos[0] += this.off[0];
-        this.obj.pos[1] += this.off[1];
+        
         this.obj.drawScene(gl, program);
-        this.obj.pos[0] -= this.off[0];
-        this.obj.pos[1] -= this.off[1];
+        this.obj2.drawScene(gl, program);
+        
     }
-    reset() {
-        this.off = [0, 0];
-    }
+
 }
 
 export { UImannager }

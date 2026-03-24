@@ -82,7 +82,7 @@ class interactable {
         this.obj;
         this.animateAllways = true;
         this.animate = true;
-        this.type = { name: "npc", children: false }
+        this.type = { name: "interactable", children: false }
     }
 
     drawScene(gl, programInfo) {
@@ -90,14 +90,24 @@ class interactable {
     }
 
     update(gl, time, deltaTime, keys) {
-        if (!this.hover) {
-            if (this.animateAllways) {this.obj.textOff[0] = Math.floor(time * 10);this.obj.textOff[1] = 1;}
-            else this.obj.textOff[0] = 0;
-        }else{
-            if(this.animate)this.obj.textOff[0] = Math.floor(time * 10);
-            else this.obj.textOff[0] = 1;
-            this.obj.textOff[1] = 0;
-        }
+        var len = Math.sqrt(Math.pow(keys["player"][0] - this.obj.pos[0], 2) + Math.pow(keys["player"][1] - this.obj.pos[2], 2));
+        if (len < 15) {
+            if(this.click){
+                keys["lock"] = this.type.name;
+            }
+            if (this.hover || keys["lock"] == this.type.name) {
+                if (this.animate) this.obj.textOff[0] = Math.floor(time * 10);
+                else this.obj.textOff[0] = 1;
+                this.obj.textOff[1] = 0;
+            } else {
+                if (this.animateAllways) { this.obj.textOff[0] = Math.floor(time * 10); this.obj.textOff[1] = 1; }
+                else this.obj.textOff[0] = 0;
+            }
+        }else {
+                if (this.animateAllways) { this.obj.textOff[0] = Math.floor(time * 10); this.obj.textOff[1] = 1; }
+                else this.obj.textOff[0] = 0;
+            }
+
     }
 }
 
@@ -107,6 +117,7 @@ class pestle extends (interactable) {
         this.obj = new SpObj(gl, [25, 9 + 5, 8], [0, (0 * Math.PI) / 180, 0], [4, 8, 4], "pestle", initCubeBuffer(gl, [9]));
         this.obj.textOff = [0, 0, 1.0 / 8.0, 1];
         this.animateAllways = false;
+        this.type.name = "pestle";
     }
 
 }
@@ -117,6 +128,8 @@ class choppingboard extends (interactable) {
         this.obj = new SpObj(gl, [35, 9 + 3, 8], [0, (0 * Math.PI) / 180, 0], [4, 8, 4], "choppingboard", initCubeBuffer(gl, [9]));
         this.obj.textOff = [0, 0, 1.0 / 5.0, 1];
         this.animateAllways = false;
+        
+        this.type.name = "choppingboard";
     }
 
 }
@@ -128,6 +141,8 @@ class chest extends (interactable) {
         this.obj.textOff = [0, 0, 0.5, 1];
         this.animateAllways = false;
         this.animate = false;
+        
+        this.type.name = "chest";
     }
 
 }
@@ -140,6 +155,8 @@ class book extends (interactable) {
         this.obj.textOff = [0, 0, 0.5, 1];
         this.animateAllways = false;
         this.animate = false;
+        
+        this.type.name = "book";
     }
 
 }
@@ -149,6 +166,7 @@ class furnace extends (interactable) {
         super();
         this.obj = new SpObj(gl, [30, 15, -35], [0, (0 * Math.PI) / 180, 0], [7, 15, 7], "furnace", initCubeBuffer(gl, [9]));
         this.obj.textOff = [0, 1, 1 / 6, 1 / 2];
+        this.type.name = "furnace";
 
     }
 
@@ -160,6 +178,7 @@ class pot extends (interactable) {
 
         this.obj = new SpObj(gl, [45, 12, -35], [0, (0 * Math.PI) / 180, 0], [7, 15, 7], "pot", initCubeBuffer(gl, [9]));
         this.obj.textOff = [0, 1, 1 / 3, 1];
+        this.type.name = "pot";
     }
 
 }
@@ -169,6 +188,7 @@ class cash extends (interactable) {
         super();
 
         this.obj = new SpObj(gl, [0, 9, -13], [0, 0, 0], [3, 5, 17], "cash", initCubeBuffer(gl, [9]));
+        this.type.name = "cash";
     }
 
 }

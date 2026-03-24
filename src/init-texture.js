@@ -13,6 +13,19 @@ const texturesNames = {
     book:"../img/book.png",
     pot:"../img/pot.png",
     choppingboard:"../img/choppingboard.png",
+
+    HealingHerb:"../img/HealingHerb.png",
+    RedMushroom:"../img/RedMushroom.png",
+    BlueBerry:"../img/BlueBerry.png",
+    CyclopsEye:"../img/CyclopsEye.png",
+    FireBlossom:"../img/FireBlossom.png",
+    FrostPetal:"../img/FrostPetal.png",
+    WindFeather:"../img/WindFeather.png",
+    ShadowCore:"../img/ShadowCore.png",
+    MoonstoneDust:"../img/MoonstoneDust.png",
+    TaintedCross:"../img/TaintedCross.png",
+    VoidEssence:"../img/VoidEssence.png",
+    SoulFragment:"../img/SoulFragment.png",
 };
 
 //

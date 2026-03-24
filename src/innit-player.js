@@ -17,7 +17,7 @@ class player {
     update(gl, time, deltaTime, keys) {
         var move = [0, 0]
         // get the movement input direction
-        if (!this.working) {
+        if (keys["lock"] == "") {
             if (keys["w"]) {
                 move[1] -= 1;
                 this.obj.textOff[1] = 3;
