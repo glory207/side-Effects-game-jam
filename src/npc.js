@@ -36,19 +36,22 @@ class innit_npcManager {
         this.timer -= deltaTime;
         if (this.timer < 0) {
 
-            this.timer = Math.random() * 20 + 10;
-            this.add(gl);
+            this.timer = Math.random() * 20 + 30;
+           if(this.curid - this.lineid<6) this.add(gl);
         }
 
         this.children.forEach(npc => {
-            if (npc.click) {
-
-                if (npc.wander && !npc.leave) {
-                    npc.leave = true;
-                    npc.target = [0, 10];
-                } else if (npc.id == this.lineid) {
+            if (npc.id == this.lineid && (keys["accept"] || keys["regect"])) {
+                if (keys["accept"]) {
                     this.lineid += 1;
                 }
+                if (keys["regect"]) {
+                    this.lineid += 1;
+                    npc.leave = true;
+                    npc.target = [0, 10];
+                }
+                keys["accept"] = false;
+                keys["regect"] = false;
             }
             if (npc.leave && npc.pos[0] > -6) {
                 npc.target = [-50, 10];

@@ -26,6 +26,15 @@ const texturesNames = {
     TaintedCross:"../img/TaintedCross.png",
     VoidEssence:"../img/VoidEssence.png",
     SoulFragment:"../img/SoulFragment.png",
+    hand:"../img/hand.png",
+
+    arrow:"../img/arrow.png",
+    bellow:"../img/bellow.png",
+    blob:"../img/blob.png",
+    no:"../img/no.png",
+    ok:"../img/ok.png",
+    potion:"../img/potion.png",
+    progressbar:"../img/progressbar.png",
 };
 
 //

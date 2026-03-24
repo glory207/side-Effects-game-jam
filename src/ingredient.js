@@ -6,15 +6,10 @@ Defense
 Stealth
 
 Strength = Defense + Defense 50%
-
 Energy = Healing + Strength 50%
-
 Vision
-
 Speed = Stealth + Strength 25%
-
 Walmth
-
 Invisibility = Stealth + Energy 
 
 Luck 
@@ -56,43 +51,20 @@ furnace up effects
 
 chopping down effects
 
-pestle up stability
+pestle up duration
 
+pot down duration
+
+to do
+interactions 
+hover show
+mush and potion img
+npc requests
 
 5. Side Effect Strength
 Scale: 1–10
 
  */
-
-const EffectInteractions = {
-    conflicts: [
-        {
-            effects: ["FireDamage", "Defense"],
-            result: "Steam",
-            action: "replace" // removes both, creates new
-        },
-        {
-            effects: ["Healing", "PoisonDamage"],
-            action: "weaken", // both reduced
-            modifier: 0.5
-        }
-    ],
-
-    synergies: [
-        {
-            effects: ["PoisonDamage", "FireDamage"],
-            result: "BurningPoison",
-            action: "combine",
-            bonus: 2
-        },
-        {
-            effects: ["Speed", "Strength"],
-            result: "Berserk",
-            action: "combine",
-            bonus: 3
-        }
-    ]
-};
 
 
 var ingredients = {
@@ -100,7 +72,6 @@ var ingredients = {
         name:"HealingHerb",
         tier: "Common",
         primaryEffect: { type: "Healing", value: 3 },
-        stability: 8,
         sideEffects: { type: "Drowsiness", category: "Mental", strength: 2 },
     }
 
@@ -109,7 +80,6 @@ var ingredients = {
         name:"RedMushroom",
         tier: "Common",
         primaryEffect: { type: "Strength", value: 4 },
-        stability: 5,
         sideEffects: { type: "Poison", category: "Physical", strength: 3 },
     }
 
@@ -118,7 +88,6 @@ var ingredients = {
         name:"BlueBerry",
         tier: "Common",
         primaryEffect: { type: "Energy", value: 3 },
-        stability: 7,
         sideEffects: { type: "Confusion", category: "Mental", strength: 2 },
     }
 
@@ -126,7 +95,6 @@ var ingredients = {
         name:"CyclopsEye",
         tier: "Uncommon",
         primaryEffect: { type: "Vision", value: 5 },
-        stability: 5,
         sideEffects: { type: "Rage", category: "Mental", strength: 5 },
     }
 
@@ -134,7 +102,6 @@ var ingredients = {
         name:"FireBlossom",
         tier: "Uncommon",
         primaryEffect: { type: "Walmth", value: 6 },
-        stability: 4,
         sideEffects: { type: "Burning", category: "Physical", strength: 5 },
     }
 
@@ -143,7 +110,6 @@ var ingredients = {
         name:"FrostPetal",
         tier: "Uncommon",
         primaryEffect: { type: "Defense", value: 5 },
-        stability: 6,
         sideEffects: { type: "SelfSlow", category: "Physical", strength: 4 },
     }
 
@@ -152,7 +118,6 @@ var ingredients = {
         name:"WindFeather",
         tier: "Uncommon",
         primaryEffect: { type: "Speed", value: 5 },
-        stability: 6,
         sideEffects: { type: "Fragility", category: "Physical", strength: 3 },
     }
 
@@ -160,7 +125,6 @@ var ingredients = {
         name:"ShadowCore",
         tier: "Rare",
         primaryEffect: { type: "Invisibility", value: 8 },
-        stability: 3,
         sideEffects: { type: "Blindness", category: "Physical", strength: 6 },
     }
 
@@ -169,7 +133,6 @@ var ingredients = {
         name:"MoonstoneDust",
         tier: "Rare",
         primaryEffect: { type: "Luck", value: 7 },
-        stability: 7,
         sideEffects: { type: "PermanentLifespanLoss", category: "Mental", strength: 5 },
     }
 
@@ -178,7 +141,6 @@ var ingredients = {
         name:"TaintedCross",
         tier: "Rare",
         primaryEffect: { type: "reserection", value: 7 },
-        stability: 5,
         sideEffects: { type: "Madness", category: "Mental", strength: 4 },
     }
 
@@ -186,7 +148,6 @@ var ingredients = {
         name:"VoidEssence",
         tier: "Forbidden",
         primaryEffect: { type: "PowerBoost", value: 10 },
-        stability: 1,
         sideEffects: { type: "RandomEffect", category: "Chaos", strength: 10 },
     }
 
@@ -195,7 +156,6 @@ var ingredients = {
         name:"SoulFragment",
         tier: "Forbidden",
         primaryEffect: { type: "LifeSteal", value: 9 },
-        stability: 2,
         sideEffects: { type: "Hallucinations", category: "Physical", strength: 7 },
     }
 

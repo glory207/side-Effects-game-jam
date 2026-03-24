@@ -67,6 +67,10 @@ function start() {
 
     window.addEventListener("mousedown", (e) => {
         keys["mouseD"] = true;
+        keys["mouseDown"] = true;
+    });
+ window.addEventListener("mouseup", (e) => {
+        keys["mouseDown"] = false;
     });
     requestAnimationFrame(render);
 
